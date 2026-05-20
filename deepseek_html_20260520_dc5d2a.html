@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>世界史タイムライン | 中日对照 · 历史因果时间线</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f7efe3 0%, #ece0d0 100%);
+            font-family: 'Segoe UI', 'Roboto', 'Noto Sans', 'Poppins', '微软雅黑', sans-serif;
+            padding: 2rem 1rem;
+            color: #2c2e24;
+        }
+
+        .timeline-book {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: rgba(255, 252, 245, 0.96);
+            border-radius: 48px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 2rem 2rem 3rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(130deg, #4f6d3c, #c17b4c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .hero-sub {
+            background: #f2e3d2;
+            display: inline-block;
+            padding: 0.3rem 1.6rem;
+            border-radius: 60px;
+            color: #7b4a2a;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        .hero-desc {
+            max-width: 750px;
+            margin: 1rem auto;
+            background: #fef3e9;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .download-btn {
+            background: #2c6e2c;
+            border: none;
+            padding: 0.7rem 1.9rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .download-btn:hover {
+            background: #1f541f;
+            transform: scale(0.98);
+        }
+        .print-note {
+            font-size: 0.7rem;
+            color: #b48b5a;
+            align-self: center;
+        }
+
+        .era-section {
+            margin-bottom: 2.5rem;
+            border-radius: 32px;
+            background: #ffffffde;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .era-header {
+            padding: 0.8rem 1.8rem;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: #fcf6ed;
+            border-left: 12px solid;
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .era-title {
+            color: #4a3724;
+        }
+        .era-date {
+            font-size: 0.8rem;
+            background: #e9dccc;
+            padding: 0.2rem 0.9rem;
+            border-radius: 30px;
+            font-weight: normal;
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+            transition: 0.2s;
+            border: 1px solid #eedfcb;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 22px rgba(83, 55, 28, 0.12);
+        }
+        .card-year {
+            background: #fcecdb;
+            padding: 0.7rem 1rem;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #b45f2b;
+            border-bottom: 2px solid #ffddb0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .year-num {
+            background: #e2c7a5;
+            padding: 0.1rem 0.5rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+        .event-title-cn {
+            font-weight: 700;
+        }
+        .event-title-jp {
+            font-size: 0.8rem;
+            color: #9b6a3c;
+            font-weight: normal;
+            background: #f9efdf;
+            padding: 0.1rem 0.6rem;
+            border-radius: 30px;
+        }
+        .explain-box {
+            background: #fff6eb;
+            margin: 0.2rem 1rem 0.5rem 1rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border-left: 4px solid #e7b874;
+            color: #6a492c;
+        }
+        .why-box {
+            background: #f0f3e8;
+            margin: 0.2rem 1rem 0.5rem 1rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border-left: 4px solid #7c9a5e;
+            color: #3a5530;
+        }
+        .relation-box {
+            margin: 0.2rem 1rem 0.8rem 1rem;
+            padding: 0.5rem 0.8rem;
+            background: #f2efe3;
+            border-radius: 18px;
+            font-size: 0.8rem;
+            color: #5b5c3c;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: baseline;
+        }
+        .relation-label {
+            font-weight: 700;
+            background: #d9cbae;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        .card-tags {
+            padding: 0.4rem 1rem 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .tag {
+            background: #f0e4d4;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            color: #7c562f;
+        }
+
+        /* 时代配色 */
+        .era-section[data-era="medieval"] .era-header { border-left-color: #b46f3a; }
+        .era-section[data-era="reformation"] .era-header { border-left-color: #7c5e3a; }
+        .era-section[data-era="industrial"] .era-header { border-left-color: #5f8b4a; }
+        .era-section[data-era="napoleon"] .era-header { border-left-color: #c0894b; }
+        .era-section[data-era="imperial"] .era-header { border-left-color: #b37b3c; }
+        .era-section[data-era="ww1"] .era-header { border-left-color: #9e5e2e; }
+        .era-section[data-era="interwar"] .era-header { border-left-color: #aa6f42; }
+        .era-section[data-era="ww2"] .era-header { border-left-color: #a7401a; }
+        .era-section[data-era="coldwar"] .era-header { border-left-color: #4e6b3c; }
+        .era-section[data-era="modern"] .era-header { border-left-color: #ac8e62; }
+
+        @media (max-width: 780px) {
+            .timeline-book { padding: 1rem; }
+            .timeline-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .era-header { font-size: 1.3rem; }
+        }
+
+        @media print {
+            body { background: white; padding: 0.1in; }
+            .timeline-book { background: white; box-shadow: none; padding: 0; }
+            .toolbar, .download-btn, .print-note, .hero-desc { display: none; }
+            .event-card { break-inside: avoid; border: 1px solid #aaa; }
+            .explain-box, .why-box, .relation-box { background: #f9f9f9; break-inside: avoid; }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: #b28b64;
+            border-top: 1px solid #e7d9cc;
+            padding-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="timeline-book">
+    <div class="hero">
+        <h1>📜 世界史タイムライン · 因果で覚える</h1>
+        <div class="hero-sub">日本語タイトル付き | 留学生のための歴史地図</div>
+        <div class="hero-desc">💡 轻松记 + ❓ why (为什么重要) + 🔗 关联线索 — 让历史变得立体易懂</div>
+    </div>
+    <div class="toolbar">
+        <div class="print-note">🖨️ 点击保存PDF，所有日语标题和学习笔记都会保留</div>
+        <button class="download-btn" id="pdfDownloadBtn">📄 保存为 PDF / 打印</button>
+    </div>
+
+    <div id="timelineContainer"></div>
+    <footer>📖 基于史实整理 | 适合初学者建立整体框架 | 中日事件对照 + 因果逻辑</footer>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 历史事件库（中日双语标题 + 记忆技巧 + why + 关联）
+    // 日文事件名参考您提供的PDF及常用历史译名
+    // --------------------------------------------------------------
+    const timelineEvents = [
+        // ========= 中世纪 & 大航海时代 =========
+        { year:1215, cnTitle:"英国《大宪章》签署", jpTitle:"マグナ・カルタ（大憲章）",
+          memory:"国王也得守法！这是“法治”的源头。", why:"限制了王权，奠定了英国议会和近代宪政的基础。",
+          relation:"→ 影响后来的《权利法案》", tags:["英国","宪政"], eraId:"medieval", icon:"📜" },
+        { year:1265, cnTitle:"英国首次议会召开", jpTitle:"初の議会召集",
+          memory:"贵族和教士一起讨论国家大事，议会的雏形。", why:"从此议会成为英国政治的一部分，一步步限制国王权力。",
+          relation:"→ 与大宪章精神一脉相承", tags:["英国","议会"], eraId:"medieval", icon:"🏛️" },
+        { year:1487, cnTitle:"迪亚士到达好望角", jpTitle:"ディアス 喜望峰到達",
+          memory:"葡萄牙人沿着非洲溜达到最南边。", why:"打开了通往印度洋的航线，为达伽马铺路。",
+          relation:"→ 激励达伽马到达印度", tags:["葡萄牙","探险"], eraId:"medieval", icon:"⛵" },
+        { year:1492, cnTitle:"哥伦布发现美洲大陆", jpTitle:"コロンブス アメリカ大陸発見",
+          memory:"本来想去印度，结果发现了新大陆。", why:"开启了欧洲殖民美洲的时代，世界历史发生巨变。",
+          relation:"→ 西班牙建立庞大殖民地", tags:["西班牙","大发现"], eraId:"medieval", icon:"🌎" },
+        { year:1498, cnTitle:"达·伽马到达印度卡利卡特", jpTitle:"ダ・ガマ カリカット到達",
+          memory:"欧洲第一次从海路直达印度，香料不用被中间商赚差价。", why:"葡萄牙一跃成为海上贸易强国，打破了阿拉伯人和意大利人的垄断。",
+          relation:"→ 葡萄牙成为海上强国", tags:["葡萄牙","贸易"], eraId:"medieval", icon:"🛶" },
+        // ========= 宗教改革·王权·殖民扩张 =========
+        { year:1517, cnTitle:"马丁·路德《九十五条论纲》", jpTitle:"マルティン・ルター「九十五ヶ条の論題」",
+          memory:"把批评教皇的意见贴在教堂门口，像今天的“论坛热帖”。", why:"引爆了宗教改革，欧洲分裂成天主教和新教两大阵营。",
+          relation:"→ 引发三十年战争", tags:["德国","宗教改革"], eraId:"reformation", icon:"⛪" },
+        { year:1519, cnTitle:"麦哲伦环球航行", jpTitle:"マゼラン世界周航",
+          memory:"人类第一次证实地球是圆的。", why:"极大拓展了欧洲人的世界观，推动了地理学和航海技术。",
+          relation:"→ 证明地圆说", tags:["西班牙","环球"], eraId:"reformation", icon:"🌍" },
+        { year:1534, cnTitle:"英国《至尊法案》", jpTitle:"国王至上法",
+          memory:"亨利八世为了离婚，宣布英国教会我最大。", why:"英国国教与罗马教廷决裂，加强了王权，为日后英帝国奠定宗教基础。",
+          relation:"→ 英国国教诞生", tags:["英国","宗教"], eraId:"reformation", icon:"👑" },
+        { year:1588, cnTitle:"英国击败西班牙无敌舰队", jpTitle:"スペイン無敵艦隊の敗北",
+          memory:"西班牙巨舰被英国小船+风暴打败。", why:"英国开始称霸海洋，西班牙衰落。",
+          relation:"→ 英国海上霸权崛起", tags:["英国","海战"], eraId:"reformation", icon:"⚓" },
+        { year:1620, cnTitle:"五月花号抵达北美", jpTitle:"メイフラワー号",
+          memory:"清教徒为信仰自由来到美洲，上岸前签了自治公约。", why:"美国自治精神的起源，影响了后来的美国宪法。",
+          relation:"→ 美国殖民地自治传统", tags:["英国","北美"], eraId:"reformation", icon:"🍂" },
+        { year:1640, cnTitle:"英国资产阶级革命", jpTitle:"ピューリタン革命（清教徒革命）",
+          memory:"议会与国王开战，克伦威尔砍了国王的头。", why:"确立了“王在法下”的原则，为君主立宪铺路。",
+          relation:"→ 导致克伦威尔护国公时期", tags:["英国","革命"], eraId:"reformation", icon:"⚔️" },
+        { year:1648, cnTitle:"威斯特伐利亚和约", jpTitle:"ウェストファリア条約",
+          memory:"结束了三十年战争，各国约定互不干涉内政。", why:"现代民族国家体系和国际法的起点。",
+          relation:"→ 欧洲主权国家体系形成", tags:["欧洲","国际法"], eraId:"reformation", icon:"🕊️" },
+        { year:1688, cnTitle:"光荣革命", jpTitle:"名誉革命",
+          memory:"不流血换国王，邀请荷兰威廉来当英国国王。", why:"确立了议会权力高于国王，英国成为君主立宪制国家。",
+          relation:"→ 通过《权利法案》", tags:["英国"], eraId:"reformation", icon:"👑⚡" },
+        { year:1689, cnTitle:"《权利法案》", jpTitle:"権利の章典",
+          memory:"国王不能随便收税或废法律，议会说了算。", why:"奠定了现代英国政治制度的基础。",
+          relation:"→ 影响了美国宪法", tags:["英国","法治"], eraId:"reformation", icon:"📜" },
+        // ========= 工业革命·启蒙·大革命 =========
+        { year:1721, cnTitle:"英国责任内阁制形成", jpTitle:"責任内閣制",
+          memory:"国王“统而不治”，首相管具体事务。", why:"现代内阁制的模板，行政权向议会负责。",
+          relation:"→ 沃尔波尔为首相", tags:["英国","政治"], eraId:"industrial", icon:"🏛️" },
+        { year:1733, cnTitle:"约翰·凯伊发明飞梭", jpTitle:"飛び杓（とびひ）",
+          memory:"织布速度翻倍，导致工人失业砸机器。", why:"拉开了工业革命的序幕，刺激了纺织机械的不断改进。",
+          relation:"→ 催生珍妮纺纱机", tags:["英国","技术"], eraId:"industrial", icon:"⚙️" },
+        { year:1757, cnTitle:"普拉西战役", jpTitle:"プラッシーの戦い",
+          memory:"英国东印度公司用贿赂+少量军队打败印度王公。", why:"英国开始实际控制印度，为英属印度帝国奠定基础。",
+          relation:"→ 英国逐步控制印度", tags:["英国","殖民"], eraId:"industrial", icon:"🐘" },
+        { year:1764, cnTitle:"哈格里夫斯发明珍妮纺纱机", jpTitle:"ジェニー紡績機",
+          memory:"一次能纺8根纱，手工纺纱的8倍！", why:"工业革命从纺织业全面爆发，家庭手工被机器取代。",
+          relation:"→ 工厂制兴起", tags:["英国"], eraId:"industrial", icon:"🧵" },
+        { year:1769, cnTitle:"瓦特改良蒸汽机", jpTitle:"ワット 蒸気機関",
+          memory:"让蒸汽机不再浪费能源，工厂可以不靠水车了。", why:"开启了蒸汽时代，推动铁路和轮船的发明。",
+          relation:"→ 交通革命", tags:["英国","动力"], eraId:"industrial", icon:"🔥" },
+        { year:1776, cnTitle:"美国《独立宣言》", jpTitle:"アメリカ独立宣言",
+          memory:"北美13州宣布：我们不是英国儿子了！", why:"第一次在正式文件中提出“人人生而平等”，鼓舞了全世界。",
+          relation:"→ 影响法国大革命", tags:["美国","独立战争"], eraId:"industrial", icon:"🗽" },
+        { year:1787, cnTitle:"美国宪法", jpTitle:"アメリカ合衆国憲法",
+          memory:"分权制衡：总统、国会、法院互相牵制。", why:"第一部成文宪法，成为近代民主国家的模板。",
+          relation:"→ 确立联邦共和制", tags:["美国"], eraId:"industrial", icon:"⚖️" },
+        { year:1789, cnTitle:"法国大革命爆发", jpTitle:"フランス革命",
+          memory:"老百姓饿肚子，国王还乱花钱，于是攻占巴士底狱。", why:"推翻了千年封建专制，传播了自由、平等、博爱。",
+          relation:"→ 发布《人权宣言》", tags:["法国","革命"], eraId:"industrial", icon:"🇫🇷" },
+        // ========= 拿破仑时代 =========
+        { year:1799, cnTitle:"拿破仑雾月政变", jpTitle:"ブリュメールのクーデター",
+          memory:"拿破仑用大炮轰跑议会，自己当第一执政。", why:"结束了法国大革命的混乱，建立强有力的军事独裁。",
+          relation:"→ 拿破仑帝国建立", tags:["法国","拿破仑"], eraId:"napoleon", icon:"🎩" },
+        { year:1804, cnTitle:"《拿破仑法典》", jpTitle:"ナポレオン法典",
+          memory:"法律面前人人平等、私有财产神圣不可侵犯。", why:"很多国家的民法都参考了它，是大革命的成果结晶。",
+          relation:"→ 影响欧洲大陆法系", tags:["法国","法典"], eraId:"napoleon", icon:"⚖️" },
+        { year:1812, cnTitle:"拿破仑远征莫斯科", jpTitle:"モスクワ遠征",
+          memory:"冬天+焦土战术，法军冻死饿死无数。", why:"拿破仑帝国由盛转衰的转折点。",
+          relation:"→ 第六次反法同盟打败拿破仑", tags:["法国","俄国"], eraId:"napoleon", icon:"❄️" },
+        { year:1814, cnTitle:"维也纳会议", jpTitle:"ウィーン会議",
+          memory:"欧洲贵族们开会重新画地图，防止再出一个拿破仑。", why:"建立了维也纳体系，维持了欧洲近40年的和平。",
+          relation:"→ 瑞士永久中立", tags:["欧洲"], eraId:"napoleon", icon:"🤝" },
+        { year:1823, cnTitle:"门罗宣言", jpTitle:"モンロー教書",
+          memory:"美洲是美洲人的美洲，欧洲别来干涉。", why:"美国开始当美洲老大，孤立主义长期影响美国外交。",
+          relation:"→ 美国外交基石之一", tags:["美国"], eraId:"napoleon", icon:"🌎" },
+        { year:1848, cnTitle:"欧洲革命浪潮", jpTitle:"1848年革命",
+          memory:"法国、德意志、奥地利到处起义，要求宪法和自由。", why:"虽然大多失败，但吓得国王们做出改革，促进了民族主义。",
+          relation:"→ 推动意大利、德国统一", tags:["欧洲"], eraId:"napoleon", icon:"🔥" },
+        // ========= 民族国家·帝国主义 =========
+        { year:1853, cnTitle:"克里米亚战争", jpTitle:"クリミア戦争",
+          memory:"英法帮奥斯曼打俄国，因为怕俄国太强。", why:"俄国惨败，暴露了落后，促使其进行农奴制改革。",
+          relation:"→ 俄国农奴制改革", tags:["俄国","奥斯曼"], eraId:"imperial", icon:"⚔️" },
+        { year:1861, cnTitle:"俄国农奴制改革", jpTitle:"農奴解放令",
+          memory:"沙皇解放农奴，但农民要花钱买地。", why:"俄国迈出了资本主义的重要一步，但改革不彻底。",
+          relation:"→ 俄国资本主义发展", tags:["俄国"], eraId:"imperial", icon:"⛓️" },
+        { year:1863, cnTitle:"解放黑人奴隶宣言", jpTitle:"奴隷解放宣言",
+          memory:"林肯宣布南方叛乱州的奴隶自由。", why:"使战争变成解放黑人的正义之战，北方获得道义优势。",
+          relation:"→ 北方赢得南北战争", tags:["美国","人权"], eraId:"imperial", icon:"🕊️" },
+        { year:1866, cnTitle:"普奥战争", jpTitle:"普墺戦争",
+          memory:"普鲁士用铁路+后膛枪快速打败奥地利。", why:"把奥地利踢出德意志，普鲁士成为德意志唯一主导。",
+          relation:"→ 北德意志联邦成立", tags:["普鲁士"], eraId:"imperial", icon:"⚔️" },
+        { year:1868, cnTitle:"日本明治维新", jpTitle:"明治維新",
+          memory:"日本看到中国被欺负，决心“脱亚入欧”。", why:"日本迅速成为近代化强国，走上对外扩张之路。",
+          relation:"→ 甲午战争、日俄战争", tags:["日本","近代化"], eraId:"imperial", icon:"🇯🇵" },
+        { year:1871, cnTitle:"德意志帝国成立", jpTitle:"ドイツ帝国成立",
+          memory:"普法战争打败法国后，在凡尔赛宫宣布德国统一。", why:"欧洲出现了一个强大的德国，改变了力量平衡。",
+          relation:"→ 埋下法德仇恨", tags:["德国"], eraId:"imperial", icon:"🏛️" },
+        { year:1882, cnTitle:"三国同盟", jpTitle:"三国同盟",
+          memory:"德国、奥匈、意大利抱团，防备法国和俄国。", why:"形成了第一次世界大战的轴心阵营之一。",
+          relation:"→ 与三国协约对立", tags:["同盟"], eraId:"imperial", icon:"🔗" },
+        { year:1894, cnTitle:"甲午中日战争", jpTitle:"日清戦争",
+          memory:"日本赌国运打败清朝，拿到台湾和2亿两白银。", why:"大清彻底暴露虚弱，列强掀起瓜分中国狂潮。",
+          relation:"→ 三国干涉还辽", tags:["中国","日本"], eraId:"imperial", icon:"⚓" },
+        // ========= 一战与革命 =========
+        { year:1904, cnTitle:"日俄战争", jpTitle:"日露戦争",
+          memory:"日本在东北打败俄国，黄种人第一次打败白人大国。", why:"日本跻身列强，俄国革命压力加大。",
+          relation:"→ 朴茨茅斯条约", tags:["日本","俄国"], eraId:"ww1", icon:"🚢" },
+        { year:1911, cnTitle:"辛亥革命", jpTitle:"辛亥革命",
+          memory:"孙中山领导推翻清朝，结束两千年帝制。", why:"亚洲第一个共和国成立，民主共和观念深入人心。",
+          relation:"→ 袁世凯窃取革命果实", tags:["中国"], eraId:"ww1", icon:"🍂" },
+        { year:1914, cnTitle:"萨拉热窝事件 → 一战爆发", jpTitle:"サラエヴォ事件・第一次世界大戦",
+          memory:"奥匈皇储被刺杀，各国盟友连锁反应打成一团。", why:"第一次世界大战全面爆发，改变了世界格局。",
+          relation:"→ 四大帝国瓦解", tags:["欧洲"], eraId:"ww1", icon:"💣" },
+        { year:1917, cnTitle:"俄国十月革命", jpTitle:"十月革命",
+          memory:"列宁领导工人兵夺取政权，建立苏维埃。", why:"世界上第一个社会主义国家诞生，影响了20世纪。",
+          relation:"→ 苏联成立", tags:["俄国"], eraId:"ww1", icon:"🔴" },
+        { year:1918, cnTitle:"一战结束", jpTitle:"第一次世界大戦終結",
+          memory:"德国投降，奥匈瓦解，凡尔赛条约让德国背巨债。", why:"埋下了第二次世界大战的种子。",
+          relation:"→ 凡尔赛-华盛顿体系", tags:["欧洲"], eraId:"ww1", icon:"🕊️" },
+        // ========= 战间期·大萧条 =========
+        { year:1929, cnTitle:"经济大危机", jpTitle:"世界大恐慌",
+          memory:"美国股市崩盘，银行倒闭，工厂关门，全球大萧条。", why:"导致纳粹上台、日本军国主义膨胀，最终走向二战。",
+          relation:"→ 罗斯福新政", tags:["经济"], eraId:"interwar", icon:"📉" },
+        { year:1933, cnTitle:"希特勒上台", jpTitle:"ヒトラー政権誕生",
+          memory:"德国人穷怕了，选希特勒当总理。", why:"建立法西斯独裁，疯狂扩军备战，发动二战。",
+          relation:"→ 纳粹德国", tags:["德国"], eraId:"interwar", icon:"🔥" },
+        { year:1937, cnTitle:"卢沟桥事变", jpTitle:"盧溝橋事件",
+          memory:"日本借口士兵失踪向中国全面进攻。", why:"中国全面抗日战争爆发，二战亚洲战场序幕。",
+          relation:"→ 中日全面战争", tags:["中国","日本"], eraId:"interwar", icon:"⚔️" },
+        // ========= 第二次世界大战 =========
+        { year:1939, cnTitle:"德国入侵波兰", jpTitle:"ポーランド侵攻",
+          memory:"闪电战横扫波兰，英法对德宣战。", why:"第二次世界大战全面爆发。",
+          relation:"→ 西欧沦陷", tags:["欧洲"], eraId:"ww2", icon:"💥" },
+        { year:1941, cnTitle:"珍珠港事件", jpTitle:"真珠湾攻撃",
+          memory:"日本偷袭美军珍珠港，美国愤怒参战。", why:"二战真正成为全球大战，盟国力量大增。",
+          relation:"→ 太平洋战争", tags:["美国","太平洋"], eraId:"ww2", icon:"✈️" },
+        { year:1945, cnTitle:"日本投降", jpTitle:"日本降伏",
+          memory:"广岛长崎原子弹爆炸后，日本天皇宣布投降。", why:"二战结束，核武器时代开启，世界进入冷战。",
+          relation:"→ 冷战开始", tags:["全球"], eraId:"ww2", icon:"☮️" },
+        // ========= 冷战·独立浪潮 =========
+        { year:1947, cnTitle:"马歇尔计划", jpTitle:"マーシャル・プラン",
+          memory:"美国出钱帮西欧重建，顺便防止他们倒向苏联。", why:"西欧经济快速复兴，美国影响力大增。",
+          relation:"→ 欧洲一体化起步", tags:["美国","欧洲"], eraId:"coldwar", icon:"🤝" },
+        { year:1949, cnTitle:"中华人民共和国成立", jpTitle:"中華人民共和国成立",
+          memory:"毛泽东宣布新中国成立，国民党败退台湾。", why:"世界人口最多的国家加入社会主义阵营。",
+          relation:"→ 冷战格局加强", tags:["中国"], eraId:"coldwar", icon:"🇨🇳" },
+        { year:1962, cnTitle:"古巴导弹危机", jpTitle:"キューバ危機",
+          memory:"苏联在古巴部署核导弹，美国军舰封锁，世界差点核战争。", why:"人类最接近核毁灭的时刻，之后美苏设立热线。",
+          relation:"→ 部分核禁试条约", tags:["美国","苏联"], eraId:"coldwar", icon:"☢️" },
+        { year:1969, cnTitle:"人类登月", jpTitle:"アポロ11号月面着陸",
+          memory:"阿姆斯特朗踏上月球，美苏太空竞赛美国胜出。", why:"展示了美国科技实力，鼓舞了冷战中的西方。",
+          relation:"→ 科技竞争白热化", tags:["科技"], eraId:"coldwar", icon:"🌕" },
+        { year:1972, cnTitle:"尼克松访华", jpTitle:"ニクソン大統領訪中",
+          memory:"中美冷战对手握手，乒乓球外交后尼克松来到北京。", why:"中美关系正常化，改变了世界战略格局。",
+          relation:"→ 1979年建交", tags:["中美"], eraId:"coldwar", icon:"🤝" },
+        { year:1989, cnTitle:"柏林墙倒塌", jpTitle:"ベルリンの壁崩壊",
+          memory:"东德民众推倒隔离墙，象征冷战结束。", why:"德国统一，东欧剧变，冷战走向终结。",
+          relation:"→ 两德统一", tags:["德国"], eraId:"coldwar", icon:"🧱" },
+        { year:1991, cnTitle:"苏联解体", jpTitle:"ソ連崩壊",
+          memory:"15个共和国各奔东西，冷战结束。", why:"美国成为唯一超级大国，世界进入单极时代。",
+          relation:"→ 俄罗斯联邦成立", tags:["全球"], eraId:"coldwar", icon:"🌟" },
+        // ========= 全球化与新世纪 =========
+        { year:1993, cnTitle:"欧盟成立", jpTitle:"EU発足",
+          memory:"欧洲国家抱团，统一市场和货币，减少战争风险。", why:"欧洲一体化达到新高度，成为世界重要一极。",
+          relation:"→ 欧元诞生", tags:["欧洲"], eraId:"modern", icon:"🇪🇺" },
+        { year:2001, cnTitle:"9·11事件", jpTitle:"9・11同時多発テロ",
+          memory:"恐怖分子劫机撞毁世贸大楼，美国开始反恐战争。", why:"改变了美国外交政策，引发阿富汗和伊拉克战争。",
+          relation:"→ 全球反恐", tags:["美国"], eraId:"modern", icon:"🗽💔" },
+        { year:2008, cnTitle:"全球金融危机", jpTitle:"世界金融危機",
+          memory:"美国房贷危机引爆全球金融海啸。", why:"重创全球经济，中国推出4万亿刺激计划。",
+          relation:"→ 欧债危机", tags:["经济","中国"], eraId:"modern", icon:"🏅" },
+        { year:2010, cnTitle:"阿拉伯之春", jpTitle:"アラブの春",
+          memory:"突尼斯小贩自焚引发多国反政府浪潮。", why:"多国独裁者倒台，但导致利比亚、叙利亚长期内战。",
+          relation:"→ 难民危机", tags:["中东"], eraId:"modern", icon:"🌿" }
+    ];
+
+    // 时代映射
+    const eraMap = {
+        medieval:    { name: "🏰 中世纪 & 大航海序幕", dateRange: "~1500", colorKey: "medieval" },
+        reformation: { name: "⛪ 宗教改革·王权·殖民初潮", dateRange: "1500-1699", colorKey: "reformation" },
+        industrial:  { name: "⚙️ 工业革命·启蒙·大革命", dateRange: "1700-1799", colorKey: "industrial" },
+        napoleon:    { name: "🎖️ 拿破仑时代", dateRange: "1800-1849", colorKey: "napoleon" },
+        imperial:    { name: "🌏 民族统一·帝国主义", dateRange: "1850-1899", colorKey: "imperial" },
+        ww1:         { name: "💣 一战与革命", dateRange: "1900-1918", colorKey: "ww1" },
+        interwar:    { name: "🌪️ 战间期·大萧条", dateRange: "1919-1938", colorKey: "interwar" },
+        ww2:         { name: "💥 第二次世界大战", dateRange: "1939-1945", colorKey: "ww2" },
+        coldwar:     { name: "❄️ 冷战·独立浪潮", dateRange: "1946-1991", colorKey: "coldwar" },
+        modern:      { name: "📱 全球化与新世纪", dateRange: "1992～", colorKey: "modern" }
+    };
+
+    function renderTimeline() {
+        const container = document.getElementById('timelineContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        const grouped = {};
+        for (let ev of timelineEvents) {
+            if (!grouped[ev.eraId]) grouped[ev.eraId] = [];
+            grouped[ev.eraId].push(ev);
+        }
+        
+        for (let eraId of Object.keys(eraMap)) {
+            const list = grouped[eraId];
+            if (!list || list.length === 0) continue;
+            const era = eraMap[eraId];
+            const section = document.createElement('div');
+            section.className = `era-section`;
+            section.setAttribute('data-era', era.colorKey);
+            
+            const header = document.createElement('div');
+            header.className = 'era-header';
+            header.innerHTML = `<span class="era-title">${era.name}</span><span class="era-date">${era.dateRange}</span>`;
+            section.appendChild(header);
+            
+            const grid = document.createElement('div');
+            grid.className = 'timeline-grid';
+            list.sort((a,b) => a.year - b.year);
+            for (let ev of list) {
+                const card = document.createElement('div');
+                card.className = 'event-card';
+                const yearDiv = document.createElement('div');
+                yearDiv.className = 'card-year';
+                yearDiv.innerHTML = `<span class="year-num">${ev.year}</span>
+                                     <span class="event-title-cn">${ev.cnTitle}</span>
+                                     <span class="event-title-jp">${ev.jpTitle}</span>`;
+                const memoryDiv = document.createElement('div');
+                memoryDiv.className = 'explain-box';
+                memoryDiv.innerHTML = `💡 轻松记：${ev.memory}`;
+                const whyDiv = document.createElement('div');
+                whyDiv.className = 'why-box';
+                whyDiv.innerHTML = `❓ why：${ev.why}`;
+                const relationDiv = document.createElement('div');
+                relationDiv.className = 'relation-box';
+                relationDiv.innerHTML = `<span class="relation-label">🔗 关联</span> ${ev.relation}`;
+                const tagsDiv = document.createElement('div');
+                tagsDiv.className = 'card-tags';
+                for (let tag of ev.tags) {
+                    const span = document.createElement('span');
+                    span.className = 'tag';
+                    span.innerText = tag;
+                    tagsDiv.appendChild(span);
+                }
+                card.appendChild(yearDiv);
+                card.appendChild(memoryDiv);
+                card.appendChild(whyDiv);
+                card.appendChild(relationDiv);
+                card.appendChild(tagsDiv);
+                grid.appendChild(card);
+            }
+            section.appendChild(grid);
+            container.appendChild(section);
+        }
+    }
+    
+    renderTimeline();
+    
+    // 下载/打印PDF
+    const pdfBtn = document.getElementById('pdfDownloadBtn');
+    if (pdfBtn) {
+        pdfBtn.addEventListener('click', () => {
+            window.print();
+        });
+    }
+</script>
+</body>
+</html>
